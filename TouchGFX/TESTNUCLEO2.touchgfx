@@ -1,0 +1,233 @@
+{
+  "Application": {
+    "Screens": [
+      {
+        "Name": "Main",
+        "Components": [
+          {
+            "Type": "Image",
+            "Name": "background",
+            "Width": 480,
+            "Height": 272,
+            "RelativeFilename": "Main_Background.png"
+          },
+          {
+            "Type": "ToggleButton",
+            "Name": "onOffButton",
+            "X": 97,
+            "Y": 136,
+            "Width": 128,
+            "Height": 38,
+            "Pressed": "__designer\\Blue_Togglebars_Toggle_round_large_button_ON.png",
+            "Released": "__designer\\Blue_Togglebars_Toggle_round_large_button_OFF.png"
+          },
+          {
+            "Type": "Button",
+            "Name": "buttonAdjust",
+            "X": 345,
+            "Y": 133,
+            "Width": 120,
+            "Height": 44,
+            "Pressed": "adjust_button_pressed.png",
+            "Released": "adjust_button.png"
+          },
+          {
+            "Type": "Image",
+            "Name": "bulpWhite",
+            "X": 27,
+            "Y": 117,
+            "Width": 60,
+            "Height": 60,
+            "RelativeFilename": "peare_hvid.png"
+          },
+          {
+            "Type": "Image",
+            "Name": "bulbYellow",
+            "X": 27,
+            "Y": 117,
+            "Width": 60,
+            "Height": 60,
+            "Visible": false,
+            "RelativeFilename": "peare_gul.png"
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "AdjustClicked",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "buttonAdjust"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionSlide",
+              "ScreenTransitionDirection": "East",
+              "ActionComponent": "PoolTemp"
+            }
+          },
+          {
+            "InteractionName": "toggleBulbColor",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "onOffButton"
+            },
+            "Action": {
+              "Type": "ActionExecuteCode",
+              "Code": "bulbYellow.setVisible(!bulbYellow.isVisible());\r\nbulbYellow.invalidate();"
+            }
+          },
+          {
+            "InteractionName": "ChangePoolLight",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "onOffButton"
+            },
+            "Action": {
+              "Type": "ActionCustom",
+              "FunctionName": "updatePoolLight"
+            }
+          }
+        ]
+      },
+      {
+        "Name": "PoolTemp",
+        "Components": [
+          {
+            "Type": "Image",
+            "Name": "background",
+            "Width": 480,
+            "Height": 272,
+            "RelativeFilename": "settings_background.png"
+          },
+          {
+            "Type": "Button",
+            "Name": "buttonOK",
+            "X": 180,
+            "Y": 207,
+            "Width": 120,
+            "Height": 44,
+            "Pressed": "ok_button_pressed.png",
+            "Released": "ok_button.png"
+          },
+          {
+            "Type": "Slider",
+            "Name": "slider",
+            "X": 11,
+            "Y": 121,
+            "Width": 357,
+            "Height": 50,
+            "IsHorizontalSlider": true,
+            "BackgroundUnselected": "__designer\\Blue_Slider_Horizontal_Medium_Slider_Round_back.png",
+            "BackgroundSelected": "__designer\\Blue_Slider_Horizontal_Medium_Slider_Round_fill.png",
+            "Indicator": "__designer\\Blue_Slider_Horizontal_Medium_Indicators_Slider_Round_nob.png",
+            "BackgroundX": 2,
+            "BackgroundY": 19,
+            "IndicatorPos": 2,
+            "IndicatorMax": 309,
+            "ValueMax": 28,
+            "ValueMin": 12,
+            "InitValue": 18
+          },
+          {
+            "Type": "TextArea",
+            "Name": "tempText",
+            "X": 381,
+            "Y": 117,
+            "Width": 115,
+            "Height": 46,
+            "TextId": "TextId2",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Wildcard1": {
+              "UseBuffer": true,
+              "BufferSize": 3
+            }
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "OkClicked",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "buttonOK"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionSlide",
+              "ScreenTransitionDirection": "West",
+              "ActionComponent": "Main"
+            }
+          },
+          {
+            "InteractionName": "SliderChanged",
+            "Trigger": {
+              "Type": "TriggerSliderValueChanged",
+              "TriggerComponent": "slider"
+            },
+            "Action": {
+              "Type": "ActionCustom",
+              "FunctionName": "sliderMoved"
+            }
+          }
+        ]
+      }
+    ],
+    "CustomContainerDefinitions": [],
+    "Name": "MyApplication",
+    "Resolution": {
+      "Width": 480,
+      "Height": 320
+    },
+    "SelectedColorDepth": 16,
+    "StartupScreenName": "Main",
+    "SelectedStartupLanguage": "GB",
+    "TouchGfxPath": "../Middlewares/ST/touchgfx",
+    "UIPath": ".",
+    "AvailableColorDepths": [
+      16
+    ],
+    "AvailableLCDs": {
+      "16": "LCD16bpp"
+    },
+    "AvailableSections": [
+      "ExtFlashSection",
+      "IntFlashSection"
+    ],
+    "AvailableResolutions": [
+      {
+        "Width": 480,
+        "Height": 320
+      }
+    ],
+    "PhysicalButtons": [],
+    "FrameworkFeatures": {
+      "LCD16bpp": {
+        "Id": "LCD16bpp",
+        "IsEnabled": true
+      }
+    },
+    "GenerateAssetsCommand": "make -f simulator/gcc/Makefile assets -j8",
+    "PostGenerateCommand": "touchgfx update_project --project-file=simulator/msvs/Application.vcxproj",
+    "PostGenerateTargetCommand": "touchgfx update_project",
+    "CompileSimulatorCommand": "make -f simulator/gcc/Makefile -j8",
+    "RunSimulatorCommand": "build\\bin\\simulator.exe",
+    "LandscapeSkinX": 0,
+    "LandscapeSkinY": 0,
+    "PortraitSkinX": 0,
+    "PortraitSkinY": 0,
+    "DisplayOrientation": "Landscape",
+    "Family": "STM32H5",
+    "SubFamily": "STM32H563/H573",
+    "Toolchain": "STM32CubeIDE",
+    "Platform": "m33",
+    "ProjectFile": "../TESTNUCLEO2.ioc",
+    "OptionalComponentsRoot": "../Middlewares/ST/touchgfx_components",
+    "OptionalComponents": [],
+    "AdditionalFeatures": []
+  },
+  "Version": "4.24.0"
+}
