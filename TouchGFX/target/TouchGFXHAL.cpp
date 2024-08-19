@@ -23,8 +23,21 @@
 #include <TouchGFXHAL.hpp>
 
 /* USER CODE BEGIN TouchGFXHAL.cpp */
+#include <touchgfx/hal/OSWrappers.hpp>
+#include "display.h"
 
 using namespace touchgfx;
+extern volatile uint8_t touch_irq;
+
+void
+HAL_GPIO_EXTI_Falling_Callback (uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == CTP_INT_Pin) {
+		touch_irq = 1;
+	} else if (GPIO_Pin == GPIO_PIN_13) {
+		OSWrappers::signalVSync();
+	}
+}
 
 void TouchGFXHAL::initialize()
 {
@@ -35,6 +48,9 @@ void TouchGFXHAL::initialize()
     // Please note, HAL::initialize() must be called to initialize the framework.
 
     TouchGFXGeneratedHAL::initialize();
+
+    /* initialize display */
+    display_init();
 }
 
 /**
@@ -86,7 +102,8 @@ void TouchGFXHAL::flushFrameBuffer(const touchgfx::Rect& rect)
     // use advanceFrameBufferToRect(uint8_t* fbPtr, const touchgfx::Rect& rect)
     // defined in TouchGFXGeneratedHAL.cpp
 
-    TouchGFXGeneratedHAL::flushFrameBuffer(rect);
+    display_update (getClientFrameBuffer(), HAL::DISPLAY_WIDTH, HAL::DISPLAY_HEIGHT, rect.x, rect.y, rect.width, rect.height);
+    //TouchGFXGeneratedHAL::flushFrameBuffer(rect);
 }
 
 bool TouchGFXHAL::blockCopy(void* RESTRICT dest, const void* RESTRICT src, uint32_t numBytes)

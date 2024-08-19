@@ -61,6 +61,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define CTP_INT_Pin GPIO_PIN_5
 #define CTP_INT_GPIO_Port GPIOE
+#define CTP_INT_EXTI_IRQn EXTI5_IRQn
 #define CTP_RST_Pin GPIO_PIN_6
 #define CTP_RST_GPIO_Port GPIOE
 #define STLK_MCO_Pin GPIO_PIN_0
