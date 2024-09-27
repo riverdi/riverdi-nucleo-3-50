@@ -22,7 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <string.h>
+#include "w25q64.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,7 +33,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define QSPI_TEST 0
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -119,8 +120,63 @@ int main(void)
   MX_TIM4_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
+
+  /* initialize QSPI memory */
+  if (W25Q64_ResetChip(&hospi1) != HAL_OK)
+	while(1);
+
+  HAL_Delay(1);
+
+  if (W25Q64_Configuration(&hospi1) != HAL_OK)
+	while(1);
+
+  HAL_Delay(1);
+
+  if (W25Q64_AutoPollingMemReady(&hospi1) != HAL_OK)
+	while(1);
+
+  if (W25Q64_WriteEnable(&hospi1)!= HAL_OK)
+	while(1);
+
+  /* test QSPI memory */
+#if QSPI_TEST
+
+  #define SECTORS_COUNT 10
+
+  uint8_t buffer_test[W25Q_SECTOR_SIZE];
+  uint32_t var = 0;
+
+  for (var = 0; var < W25Q_SECTOR_SIZE; var++)
+	buffer_test[var] = (var & 0xff);
+
+  for (var = 0; var < SECTORS_COUNT; var++) {
+
+      if (W25Q64_EraseSector(&hospi1, var * W25Q_SECTOR_SIZE,
+                             (var + 1) * W25Q_SECTOR_SIZE - 1) != HAL_OK) {
+          while (1); /* breakpoint - error detected */
+      }
+
+      if (W25Q64_Write(&hospi1, buffer_test, var * W25Q_SECTOR_SIZE,
+                       sizeof(buffer_test)) != HAL_OK) {
+          while (1); /* breakpoint - error detected */
+      }
+  }
+
+  if (W25Q64_EnableMemoryMappedMode(&hospi1) != HAL_OK)
+          while (1); /* breakpoint - error detected */
+
+  for (var = 0; var < SECTORS_COUNT; var++) {
+      if (memcmp(buffer_test,
+                 (uint8_t*) (0x90000000 + var * W25Q_SECTOR_SIZE),
+				 W25Q_SECTOR_SIZE) != HAL_OK) {
+          while (1); /* breakpoint - error detected */
+      }
+  }
+#endif
+
   if (HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3) != HAL_OK)
     Error_Handler();
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
