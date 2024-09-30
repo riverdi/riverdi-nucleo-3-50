@@ -46,6 +46,7 @@ MEMORY
 {
   RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 640K
   FLASH    (rx)    : ORIGIN = 0x08000000,   LENGTH = 2048K
+  OSPI (rw)       : ORIGIN = 0x90000000, LENGTH = 64M
 }
 
 /* Sections */
@@ -184,4 +185,12 @@ SECTIONS
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
+
+  ExtFlashSection :
+  {
+    *(ExtFlashSection ExtFlashSection.*)
+    *(.gnu.linkonce.r.*)
+    . = ALIGN(0x4);
+  } >OSPI
+
 }
